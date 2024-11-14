@@ -129,7 +129,6 @@
   <ItemGroup>
     <ClCompile Include="BMS.cpp" />
     <ClCompile Include="EM_Controller.cpp" />
-    <ClCompile Include="Energy.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="House.cpp" />
     <ClCompile Include="Inverter.cpp" />
@@ -140,7 +139,6 @@
   <ItemGroup>
     <ClInclude Include="BMS.h" />
     <ClInclude Include="EM_Controller.h" />
-    <ClInclude Include="Energy.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="House.h" />
     <ClInclude Include="Inverter.h" />

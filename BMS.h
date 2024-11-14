@@ -1,3 +1,5 @@
+#ifndef AAA_HEADER
+#define AAA_HEADER
 class BMS {
 private:
     double temperature;
@@ -10,3 +12,4 @@ public:
     double getVoltage();
     double getMaxChargeDischargePower();
 };
+#endif

@@ -1,3 +1,4 @@
+
 class Inverter {
 private:
     double maxPower;

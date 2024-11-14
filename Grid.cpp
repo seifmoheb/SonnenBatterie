@@ -1,6 +1,6 @@
 #include "Grid.h"
 
-Grid::Grid(double sold = 0.0, double bought = 0.0, double voltage = 0.0, double frequency = 0.0)
+Grid::Grid(double sold, double bought, double voltage, double frequency)
     : powerSold(sold), powerBought(bought), voltage(voltage), frequency(frequency) {}
 
 double Grid::getPowerSold()  { return powerSold; }
