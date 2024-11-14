@@ -7,7 +7,7 @@ private:
     double frequency;
 
 public:
-    Grid(double sold = 0.0, double bought = 0.0, double voltage = 0.0, double frequency = 0.0);
+    Grid(double sold, double bought, double voltage,double frequency);
 
     double getPowerSold();
     double getPowerBought();
