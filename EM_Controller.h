@@ -20,6 +20,11 @@ public:
     EM_Controller(Photovoltaic& pv, Grid& grid, Storage& storage, House& house);
     void manageEnergy();
     Grid& getGrid();
+    Photovoltaic& getPhotovoltaic();
+    Storage& getStorage();
+    House& getHouse();
+
+
 };
 
 #endif

@@ -1,7 +1,10 @@
 #include "House.h"
 
-House::House(double power, double voltage, double frequency, double current)
-    : powerConsumed(power), voltage(voltage), frequency(frequency), current(current) {}
+House::House(double voltage, double frequency, double current)
+    : voltage(voltage), frequency(frequency), current(current) {
+    
+    powerConsumed = voltage * current;
+}
 
 double House::getPowerConsumed()  { return powerConsumed; }
 double House::getVoltage()  { return voltage; }

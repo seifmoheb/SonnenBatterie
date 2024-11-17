@@ -13,7 +13,9 @@ public:
     Inverter(double maxP, double volt, double curr, double gridFreq, double gridVolt);
 
     void setPower(double p);
+    void setBatteryVoltage(double volt);
     double getMaxPower();
+    double getGridFrequency();
     double getBatteryVoltage();
     double getBatteryCurrent();
     double getPower();

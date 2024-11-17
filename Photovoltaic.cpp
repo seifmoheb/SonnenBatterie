@@ -1,8 +1,12 @@
 #include "Photovoltaic.h"
 
 
-Photovoltaic::Photovoltaic(double powerProduced, double voltage, double current) :
-powerProduced(powerProduced),voltage(voltage),current(current){}
+Photovoltaic::Photovoltaic(double voltage, double current) :
+powerProduced(powerProduced),voltage(voltage),current(current){
+	
+	powerProduced = voltage * current; // Power in Watts
+
+}
 
 double Photovoltaic::getPowerProduced()
 { 

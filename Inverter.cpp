@@ -13,6 +13,8 @@ void Inverter::setPower(double p)
         power = p;
     }
 }
+void Inverter::setBatteryVoltage(double volt) { batteryVoltage = volt; }
+double Inverter::getGridFrequency() { return gridFrequency; }
 double Inverter::getMaxPower()  { return maxPower; }
 double Inverter::getBatteryVoltage()  { return batteryVoltage; }
 double Inverter::getBatteryCurrent()  { return batteryCurrent; }

@@ -1,69 +1,78 @@
-
 #include "Storage.h"
 #include <iostream>
+#include <cmath> // For abs
 using namespace std;
+
 Storage::Storage(Inverter inv, std::vector<BMS> modules)
     : inverter(inv), batteryModules(modules), powerCommand(0.0) {}
 
 void Storage::charge(double power) {
     if (power < 0) return; // Invalid power command
-    powerCommand = 0.0;
+
+    double remainingPower = power;
+    double totalAvailableCapacity = 0.0;
+
+    // Calculate total available capacity across all batteries
     for (auto& battery : batteryModules) {
-        double totalCapacity = 0.0;
-        totalCapacity += battery.getMaxChargeDischargePower() - battery.getCurrentPower();
-         if (totalCapacity == 0) {
-            continue;
-        }
-        else if (power > totalCapacity) {
-             
-             battery.charge_dischargeBattery(totalCapacity);
-             powerCommand += totalCapacity; // Prevent overcharging
-        }
-        else if (power == totalCapacity) {
-             
-             battery.charge_dischargeBattery(power);
-             powerCommand += power;
-         }
-        else if (power < totalCapacity) {
-             battery.charge_dischargeBattery(power);
-             powerCommand += power;
-             break;
-         } 
+        totalAvailableCapacity += battery.getMaxChargeDischargePower() - battery.getCurrentPower();
     }
-    inverter.setPower(powerCommand);
-    
+    double remainingReturned = 0.0;
+    // Distribute power proportionally to each battery
+    for (auto& battery : batteryModules) {
+        if (remainingPower <= 0) break;
+
+        double availableCapacity = battery.getMaxChargeDischargePower() - battery.getCurrentPower();
+        if (availableCapacity <= 0) continue;
+
+        double proportionalPower = (availableCapacity / totalAvailableCapacity) * power;
+
+        if (proportionalPower > remainingPower) proportionalPower = remainingPower;
+        remainingReturned += battery.charge_dischargeBattery(proportionalPower);
+
+        remainingPower -= proportionalPower;
+    }
+
+    // Update the inverter with the actual power charged
+    inverter.setPower(power - remainingPower + remainingReturned);
+
+    if (remainingPower > 0) {
+        cout << "Not all power could be charged. Remaining: " << remainingPower << "W\n";
+    }
 }
 
 void Storage::discharge(double power) {
     if (power < 0) return; // Invalid power command
-    powerCommand = power;
+    double remainingReturned = 0.0;
+
+    double remainingPower = power;
+    double totalAvailableEnergy = 0.0;
+
+    // Calculate total available energy across all batteries
     for (auto& battery : batteryModules) {
-        double totalDischargeCapacity = 0.0;
-        //totalDischargeCapacity = battery.getMaxChargeDischargePower() - battery.getCurrentPower();
-        totalDischargeCapacity += battery.getCurrentPower();
-        if (totalDischargeCapacity == 0) {   
-           
-            break;
-        }
-        if (totalDischargeCapacity == powerCommand) {
-            battery.charge_dischargeBattery(-powerCommand);
-            powerCommand = 0.0;
-            break;
-        }
-        else if (totalDischargeCapacity > 0 && totalDischargeCapacity > powerCommand) {
-            battery.charge_dischargeBattery(-powerCommand);
-            powerCommand = 0.0;
-            break;
-        }
-        else if (totalDischargeCapacity > 0 && totalDischargeCapacity < powerCommand) {
-            
-            powerCommand -= totalDischargeCapacity;
-            inverter.setPower(totalDischargeCapacity);
-            battery.charge_dischargeBattery(-totalDischargeCapacity);
-        }   
+        totalAvailableEnergy += battery.getCurrentPower();
     }
-    inverter.setPower(power-powerCommand);
-   
+
+    // Distribute power proportionally to each battery
+    for (auto& battery : batteryModules) {
+        if (remainingPower <= 0) break;
+
+        double availableEnergy = battery.getCurrentPower();
+        if (availableEnergy <= 0) continue;
+
+        double proportionalPower = (availableEnergy / totalAvailableEnergy) * power;
+
+        if (proportionalPower > remainingPower) proportionalPower = remainingPower;
+        remainingReturned += battery.charge_dischargeBattery(-proportionalPower);
+
+        remainingPower -= proportionalPower;
+    }
+
+    // Update the inverter with the actual power discharged
+    inverter.setPower(power -  remainingReturned);
+
+    if (remainingPower > 0) {
+        cout << "Not all power could be discharged. Remaining: " << remainingPower << "W\n";
+    }
 }
 
 Inverter Storage::getInverter() { return inverter; }

@@ -17,7 +17,7 @@ public:
 
     void charge(double power);
     void discharge(double power);
-
+    
     Inverter getInverter();
     std::vector<BMS>& getBatteryModules();
 };
