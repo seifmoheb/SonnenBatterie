@@ -1,4 +1,5 @@
-
+#ifndef BBB_HEADER
+#define BBB_HEADER
 class Photovoltaic{
 
 private:
@@ -12,3 +13,4 @@ public:
 	double getCurrent();
 
 };
+#endif

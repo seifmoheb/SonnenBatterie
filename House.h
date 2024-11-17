@@ -1,4 +1,5 @@
-
+#ifndef BAA_HEADER
+#define BAA_HEADER
 class House {
 private:
     double powerConsumed;
@@ -13,3 +14,4 @@ public:
     double getFrequency();
     double getCurrent();
 };
+#endif

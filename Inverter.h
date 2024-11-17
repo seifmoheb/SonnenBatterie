@@ -1,4 +1,5 @@
-
+#ifndef ABB_HEADER
+#define ABB_HEADER
 class Inverter {
 private:
     double maxPower;
@@ -17,4 +18,4 @@ public:
     double getBatteryCurrent();
     double getPower();
 };
-
+#endif
