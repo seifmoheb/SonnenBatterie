@@ -2,7 +2,8 @@
 #include "BMS.h"
 Inverter::Inverter(double maxP, double volt, double curr, double gridFreq, double gridVolt)
     : maxPower(maxP), batteryVoltage(volt), batteryCurrent(curr),
-    gridFrequency(gridFreq), gridVoltage(gridVolt), power(0) {}
+    gridFrequency(gridFreq), gridVoltage(gridVolt), power(0) {
+}
 
 void Inverter::setPower(double p) 
 {

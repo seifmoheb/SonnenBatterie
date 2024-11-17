@@ -28,26 +28,26 @@ void EM_Controller::manageEnergy() {
     if (powerDifference > 0) {
         // Surplus energy: charge storage first, then sell remaining to grid
         storage.charge(powerDifference);
-        double remainingPower = powerDifference - storage.getInverter().getPower();
+        int remainingPower = powerDifference - storage.getInverter().getPower();
         if (remainingPower > 0) {
             if (storage.getInverter().getBatteryVoltage() != grid.getVoltage()) {
                 std::cout << "Grid and inverter voltage mismatch. Adjusting..." << std::endl;
                 storage.getInverter().setBatteryVoltage(grid.getVoltage());
             }
-            grid.sellPower(remainingPower);
+            grid.sellPower((double)remainingPower);
         }
     }
     else {
         // Deficit energy: discharge storage first, then buy from grid
         storage.discharge(-powerDifference);
         
-        double remainingDeficit = houseConsumption - pvProduction - storage.getInverter().getPower();
+        int remainingDeficit = houseConsumption - pvProduction - storage.getInverter().getPower();
         if (remainingDeficit > 0) {
             if (storage.getInverter().getBatteryVoltage() != grid.getVoltage()) {
                 std::cout << "Grid and inverter voltage mismatch. Adjusting..." << std::endl;
                 storage.getInverter().setBatteryVoltage(grid.getVoltage());
             }
-            grid.buyPower(remainingDeficit);
+            grid.buyPower((double)remainingDeficit);
         }
     }
 }

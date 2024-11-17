@@ -5,14 +5,14 @@ using namespace std;
 #define MAX_VOLTAGE 250
 #define MIN_VOLTAGE 5
 
-BMS::BMS(double temp, double volt, double maxPower)
-    : temperature(temp), voltage(volt), maxPower(maxPower){}
+BMS::BMS(double temp, double volt, double maxPower, double currentPower)
+    : temperature(temp), voltage(volt), maxPower(maxPower), currentPower(currentPower) {}
 
 double BMS::getTemperature() { return temperature; }
 double BMS::getVoltage() { return voltage; }
 double BMS::getMaxChargeDischargePower() { return maxPower; }
 double BMS::getCurrentPower() { return currentPower; }
-void BMS::setCurrentPower(double power) {  currentPower = power; }
+
 
 double BMS::charge_dischargeBattery(double power) {
     double remaining = 0.0;

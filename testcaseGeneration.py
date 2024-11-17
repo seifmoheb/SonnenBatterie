@@ -1,27 +1,122 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Nov 17 09:02:06 2024
-
-@author: seif
-"""
-
-
 import subprocess
 import json
 import os
+
 # Define test cases with configurations
 test_cases = [
     {
-        "name": "Scenario 1: Surplus energy from PV",
-        "photovoltaic": {"power": 1000, "voltage": 230, "current": 4.53},
+        "name": "Scenario 1: Surplus energy from PV, charge all batteries",
+        "photovoltaic": {"voltage": 666.6, "current": 1.5},
         "batteries": [
-            {"temp": 25, "volt": 230, "max_power": 500},
-            {"temp": 25, "volt": 230, "max_power": 500},
-            {"temp": 25, "volt": 230, "max_power": 500},
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
         ],
-        "inverter": {"max_power": 1500, "volt": 230, "current": 5, "freq": 50, "grid_volt": 230},
+        "inverter": {"max_power": 5000, "volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
         "grid": {"sold": 0, "bought": 0, "volt": 230, "freq": 50},
         "house": {"consumed": 600, "volt": 230, "freq": 50, "current": 2.6},
+        "expected": {
+            "battery_1_power": 233.3,
+            "battery_2_power": 233.3,
+            "battery_3_power": 233.3,
+            "grid_sold": 0,
+            "grid_bought": 0,
+        },
+    },
+    {
+        "name": "Scenario 2: Surplus energy from PV, charge all batteries, then sell to grid",
+        "photovoltaic": {"voltage": 1000.6, "current": 1.5},
+        "batteries": [
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
+        ],
+        "inverter": {"max_power": 5000, "volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
+        "grid": {"sold": 0, "bought": 0, "volt": 230, "freq": 50},
+        "house": {"consumed": 20, "volt": 230, "freq": 50, "current": 2.6},
+        "expected": {
+            "battery_1_power": 233.3,
+            "battery_2_power": 233.3,
+            "battery_3_power": 233.3,
+            "grid_sold": 0,
+            "grid_bought": 0,
+        },
+    },
+    {
+        "name": "Scenario 3: Deficit energy from PV, discharge all batteries",
+        "photovoltaic": {"voltage": 10.6, "current": 1.5},
+        "batteries": [
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
+        ],
+        "inverter": {"max_power": 5000, "volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
+        "grid": {"sold": 0, "bought": 0, "volt": 230, "freq": 50},
+        "house": {"consumed": 250, "volt": 230, "freq": 50, "current": 2.6},
+        "expected": {
+            "battery_1_power": 21.9,
+            "battery_2_power": 21.9,
+            "battery_3_power": 21.9,
+            "grid_sold": 0,
+            "grid_bought": 0,
+        },
+    },
+    {
+        "name": "Scenario 4: Deficit energy from PV, discharge all batteries, buy from grid",
+        "photovoltaic": {"voltage": 10.6, "current": 1.5},
+        "batteries": [
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
+        ],
+        "inverter": {"max_power": 5000, "volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
+        "grid": {"sold": 0, "bought": 0, "volt": 230, "freq": 50},
+        "house": {"consumed": 500, "volt": 230, "freq": 50, "current": 2.6},
+        "expected": {
+            "battery_1_power": 0,
+            "battery_2_power": 0,
+            "battery_3_power": 0,
+            "grid_sold": 0,
+            "grid_bought": 184,
+        },
+    }
+    ,
+    {
+        "name": "Scenario 5: Surplus energy from PV, full batteries, sell all to grid",
+        "photovoltaic": {"voltage": 666.6, "current": 1.5},
+        "batteries": [
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":500},
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":500},
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":500},
+        ],
+        "inverter": {"max_power": 5000, "volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
+        "grid": {"sold": 0, "bought": 0, "volt": 230, "freq": 50},
+        "house": {"consumed": 600, "volt": 230, "freq": 50, "current": 2.6},
+        "expected": {
+            "battery_1_power": 500,
+            "battery_2_power": 500,
+            "battery_3_power": 500,
+            "grid_sold": 399,
+            "grid_bought": 0,
+        },
+    },
+    {
+        "name": "Scenario 5: 2 Batteries Basic, Surplus energy from PV, full batteries, sell all to grid",
+        "photovoltaic": {"voltage": 666.6, "current": 1.5},
+        "batteries": [
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":500},
+            {"temp": 25, "volt": 230, "max_power": 500, "current_power":500},
+            
+        ],
+        "inverter": {"max_power": 5000, "volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
+        "grid": {"sold": 0, "bought": 0, "volt": 230, "freq": 50},
+        "house": {"consumed": 600, "volt": 230, "freq": 50, "current": 2.6},
+        "expected": {
+            "battery_1_power": 500,
+            "battery_2_power": 500,
+            "grid_sold": 399,
+            "grid_bought": 0,
+        },
     }
 ]
 
@@ -41,7 +136,7 @@ using namespace std;
 
 int main() {{
     // Initialize components for {test_name}
-    Photovoltaic pv({pv_power}, {pv_voltage}, {pv_current}); // PV Panel
+    Photovoltaic pv({pv_voltage}, {pv_current}); // PV Panel
     {bms_definitions}
     Inverter inverter({inv_max_power}, {inv_voltage}, {inv_current}, {inv_freq}, {inv_grid_voltage}); // Inverter
     Grid grid({grid_sold}, {grid_bought}, {grid_voltage}, {grid_freq}); // Grid
@@ -59,6 +154,7 @@ int main() {{
         std::cout << "Battery " << (i + 1) << ": " << storage.getBatteryModules().at(i).getCurrentPower() << " W" << std::endl;
     }}
     std::cout << "Grid Power Sold: " << grid.getPowerSold() << " W" << std::endl;
+    std::cout << "Grid Power Bought: " << grid.getPowerBought() << " W" << std::endl;
 
     return 0;
 }}
@@ -68,7 +164,7 @@ int main() {{
 def generate_cpp_code(test_case):
     bms_definitions = "\n    ".join(
         [
-            f'BMS battery_{i + 1}({b["temp"]}, {b["volt"]}, {b["max_power"]});'
+            f'BMS battery_{i + 1}({b["temp"]}, {b["volt"]}, {b["max_power"]},{b["current_power"]});'
             for i, b in enumerate(test_case["batteries"])
         ]
     )
@@ -76,7 +172,6 @@ def generate_cpp_code(test_case):
 
     cpp_code = cpp_template.format(
         test_name=test_case["name"],
-        pv_power=test_case["photovoltaic"]["power"],
         pv_voltage=test_case["photovoltaic"]["voltage"],
         pv_current=test_case["photovoltaic"]["current"],
         bms_definitions=bms_definitions,
@@ -98,34 +193,31 @@ def generate_cpp_code(test_case):
     return cpp_code
 
 # Write each test case to a separate C++ file
-def write_test_files():
-    #os.makedirs("tests", exist_ok=True)
-    for i, test_case in enumerate(test_cases):
+def write_test_files(test_case):
+    
         cpp_code = generate_cpp_code(test_case)
-        file_name = "SonnenBatterie.cpp"
+        file_name = f"SonnenBatterie.cpp"
         with open(file_name, "w") as file:
             file.write(cpp_code)
         print(f"Generated {file_name}")
 
 # Paths
-cpp_file = f"SonnenBatterie.cpp"
 executable = "SonnenBatterie"
 
-def compile_cpp():
-    print("Compiling C++ program...")
+def compile_cpp(cpp_file):
+    print(f"Compiling {cpp_file}...")
     result = subprocess.run(["g++", cpp_file, "-o", executable], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if result.returncode != 0:
         print(f"Compilation failed:\n{result.stderr.decode()}")
         return False
     return True
 
-def run_test_case(test_case):
+def run_test_case(test_case, cpp_file):
     """Runs a single test case."""
-    print(f"Running test case: {test_case['test_name']}")
+    print(f"Running test case: {test_case['name']}")
 
-    # Inject test case inputs into the C++ code
-    with open("test_config.json", "w") as f:
-        json.dump(test_case["input"], f)
+    if not compile_cpp(cpp_file):
+        return {"status": "failed", "error": "Compilation failed"}
 
     # Execute the compiled program
     result = subprocess.run([f"./{executable}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -166,34 +258,36 @@ def parse_output(output):
             parts = line.split(":")
             battery_id = parts[0].strip().split()[-1]
             power = float(parts[1].strip().split()[0])
-            parsed[f"bms_power_{battery_id}"] = power
+            parsed[f"battery_{battery_id}_power"] = power
         elif "Grid Power Sold" in line:
             parsed["grid_sold"] = float(line.split(":")[1].strip().split()[0])
+        elif "Grid Power Bought" in line:
+            parsed["grid_bought"] = float(line.split(":")[1].strip().split()[0])
     return parsed
 
 def generate_report(results):
     """Generates a report."""
     print("\nTest Results:")
     for result in results:
-        print(f"Test Case: {result['test_name']}")
+        print(f"Test Case: {result['name']}")
         print(f"Status: {result['status']}")
         for key, details in result.get("results", {}).items():
             print(f"  {key}: Expected={details['expected']}, Actual={details['actual']}, Status={details['status']}")
         print("\n")
+
 def main():
     results = []
 
-    for i in test_cases:
-                
-        write_test_files()
-        if not compile_cpp():
-            return
-    
-        for test_case in test_cases:
-            result = run_test_case(test_case)
-            result["test_name"] = test_case["test_name"]
-            results.append(result)
+    for i, test_case in enumerate(test_cases):
+        cpp_file = f"SonnenBatterie_{i + 1}.cpp"
+        write_test_files(test_case)
+        val = input("Type any key generate next testcase\n")
+            
+        #result = run_test_case(test_case, cpp_file)
+        #result["name"] = test_case["name"]
+        #results.append(result)
 
-    generate_report(results)
+    #generate_report(results)
+
 if __name__ == "__main__":
     main()

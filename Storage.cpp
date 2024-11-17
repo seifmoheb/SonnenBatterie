@@ -4,7 +4,9 @@
 using namespace std;
 
 Storage::Storage(Inverter inv, std::vector<BMS> modules)
-    : inverter(inv), batteryModules(modules), powerCommand(0.0) {}
+    : inverter(inv), batteryModules(modules), powerCommand(0.0) {
+    
+}
 
 void Storage::charge(double power) {
     if (power < 0) return; // Invalid power command
@@ -34,10 +36,6 @@ void Storage::charge(double power) {
 
     // Update the inverter with the actual power charged
     inverter.setPower(power - remainingPower + remainingReturned);
-
-    if (remainingPower > 0) {
-        cout << "Not all power could be charged. Remaining: " << remainingPower << "W\n";
-    }
 }
 
 void Storage::discharge(double power) {
@@ -70,9 +68,7 @@ void Storage::discharge(double power) {
     // Update the inverter with the actual power discharged
     inverter.setPower(power -  remainingReturned);
 
-    if (remainingPower > 0) {
-        cout << "Not all power could be discharged. Remaining: " << remainingPower << "W\n";
-    }
+    
 }
 
 Inverter Storage::getInverter() { return inverter; }
