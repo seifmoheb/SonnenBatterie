@@ -1,5 +1,6 @@
 SonnenBatterie Energy Management System Simulation
 This project simulates the energy management system (EMS) of a SonnenBatterie (SB), a market-leading battery storage system. The EMS handles power flow between various components, including photovoltaic (PV) panels, batteries, the inverter, the grid, and the house, optimizing energy usage based on production and consumption scenarios.
+![codingChallenge](https://github.com/user-attachments/assets/f7a2ce20-88c7-42d2-b802-e32726c60bce)
 
 Features
 Photovoltaic Panel Simulation: Calculates energy generation using voltage and current inputs.
