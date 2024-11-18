@@ -23,6 +23,8 @@ public:
     Photovoltaic& getPhotovoltaic();
     Storage& getStorage();
     House& getHouse();
+    void adjustInverterToGrid();
+    void adjustInverterToBattery();
 
 
 };

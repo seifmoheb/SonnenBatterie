@@ -12,7 +12,7 @@ test_cases = [
             {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
             {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
         ],
-        "inverter": {"max_power": 5000, "volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
+        "inverter": {"volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
         "grid": {"sold": 0, "bought": 0, "volt": 230, "freq": 50},
         "house": {"consumed": 600, "volt": 230, "freq": 50, "current": 2.6},
         "expected": {
@@ -31,14 +31,14 @@ test_cases = [
             {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
             {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
         ],
-        "inverter": {"max_power": 5000, "volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
+        "inverter": {"volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
         "grid": {"sold": 0, "bought": 0, "volt": 230, "freq": 50},
         "house": {"consumed": 20, "volt": 230, "freq": 50, "current": 2.6},
         "expected": {
-            "battery_1_power": 233.3,
-            "battery_2_power": 233.3,
-            "battery_3_power": 233.3,
-            "grid_sold": 0,
+            "battery_1_power": 500,
+            "battery_2_power": 500,
+            "battery_3_power": 500,
+            "grid_sold": 280,
             "grid_bought": 0,
         },
     },
@@ -50,7 +50,7 @@ test_cases = [
             {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
             {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
         ],
-        "inverter": {"max_power": 5000, "volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
+        "inverter": {"volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
         "grid": {"sold": 0, "bought": 0, "volt": 230, "freq": 50},
         "house": {"consumed": 250, "volt": 230, "freq": 50, "current": 2.6},
         "expected": {
@@ -69,7 +69,7 @@ test_cases = [
             {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
             {"temp": 25, "volt": 230, "max_power": 500, "current_power":100},
         ],
-        "inverter": {"max_power": 5000, "volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
+        "inverter": {"volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
         "grid": {"sold": 0, "bought": 0, "volt": 230, "freq": 50},
         "house": {"consumed": 500, "volt": 230, "freq": 50, "current": 2.6},
         "expected": {
@@ -89,7 +89,7 @@ test_cases = [
             {"temp": 25, "volt": 230, "max_power": 500, "current_power":500},
             {"temp": 25, "volt": 230, "max_power": 500, "current_power":500},
         ],
-        "inverter": {"max_power": 5000, "volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
+        "inverter": {"volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
         "grid": {"sold": 0, "bought": 0, "volt": 230, "freq": 50},
         "house": {"consumed": 600, "volt": 230, "freq": 50, "current": 2.6},
         "expected": {
@@ -108,7 +108,7 @@ test_cases = [
             {"temp": 25, "volt": 230, "max_power": 500, "current_power":500},
             
         ],
-        "inverter": {"max_power": 5000, "volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
+        "inverter": {"volt": 230, "current": 10, "freq": 50, "grid_volt": 230},
         "grid": {"sold": 0, "bought": 0, "volt": 230, "freq": 50},
         "house": {"consumed": 600, "volt": 230, "freq": 50, "current": 2.6},
         "expected": {
@@ -138,7 +138,7 @@ int main() {{
     // Initialize components for {test_name}
     Photovoltaic pv({pv_voltage}, {pv_current}); // PV Panel
     {bms_definitions}
-    Inverter inverter({inv_max_power}, {inv_voltage}, {inv_current}, {inv_freq}, {inv_grid_voltage}); // Inverter
+    Inverter inverter({inv_voltage}, {inv_current}, {inv_freq}, {inv_grid_voltage}); // Inverter
     Grid grid({grid_sold}, {grid_bought}, {grid_voltage}, {grid_freq}); // Grid
     House house({house_consumed}, {house_voltage}, {house_freq}, {house_current}); // House
     std::vector<BMS> batteryModules = {{ {bms_instances} }};
@@ -175,7 +175,6 @@ def generate_cpp_code(test_case):
         pv_voltage=test_case["photovoltaic"]["voltage"],
         pv_current=test_case["photovoltaic"]["current"],
         bms_definitions=bms_definitions,
-        inv_max_power=test_case["inverter"]["max_power"],
         inv_voltage=test_case["inverter"]["volt"],
         inv_current=test_case["inverter"]["current"],
         inv_freq=test_case["inverter"]["freq"],

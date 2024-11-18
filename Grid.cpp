@@ -2,8 +2,7 @@
 #include "Grid.h"
 
 Grid::Grid(double sold, double bought, double voltage, double frequency)
-    : powerSold(sold), powerBought(bought), voltage(voltage), frequency(frequency) {
-}
+    : powerSold(sold), powerBought(bought), voltage(voltage), frequency(frequency) {}
 
 double Grid::getPowerSold() { return powerSold; }
 double Grid::getPowerBought() { return powerBought; }

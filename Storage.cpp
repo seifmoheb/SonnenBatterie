@@ -4,12 +4,10 @@
 using namespace std;
 
 Storage::Storage(Inverter inv, std::vector<BMS> modules)
-    : inverter(inv), batteryModules(modules), powerCommand(0.0) {
-    
-}
+    : inverter(inv), batteryModules(modules), powerCommand(0.0) {}
 
-void Storage::charge(double power) {
-    if (power < 0) return; // Invalid power command
+double Storage::charge(double power) {
+    if (power < 0) return power; // Invalid power command
 
     double remainingPower = power;
     double totalAvailableCapacity = 0.0;
@@ -35,11 +33,12 @@ void Storage::charge(double power) {
     }
 
     // Update the inverter with the actual power charged
-    inverter.setPower(power - remainingPower + remainingReturned);
+    double actualCharged = power - remainingPower + remainingReturned;
+    return actualCharged;
 }
 
-void Storage::discharge(double power) {
-    if (power < 0) return; // Invalid power command
+double Storage::discharge(double power) {
+    if (power < 0) return power; // Invalid power command
     double remainingReturned = 0.0;
 
     double remainingPower = power;
@@ -66,9 +65,9 @@ void Storage::discharge(double power) {
     }
 
     // Update the inverter with the actual power discharged
-    inverter.setPower(power -  remainingReturned);
+    double actualDischarged = power - remainingReturned;
 
-    
+    return actualDischarged;
 }
 
 Inverter Storage::getInverter() { return inverter; }

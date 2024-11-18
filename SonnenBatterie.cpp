@@ -12,15 +12,14 @@
 using namespace std;
 
 int main() {
-    // Initialize components for Scenario 2: Surplus energy from PV, charge all batteries, then sell to grid
-    Photovoltaic pv(1000.6, 1.5); // PV Panel
-    BMS battery_1(25, 230, 500,100);
-    BMS battery_2(25, 230, 500,100);
-    BMS battery_3(25, 230, 500,100);
-    Inverter inverter(5000, 230, 10, 50, 230); // Inverter
+    // Initialize components for Scenario 5: 2 Batteries Basic, Surplus energy from PV, full batteries, sell all to grid
+    Photovoltaic pv(666.6, 1.5); // PV Panel
+    BMS battery_1(25, 230, 500,500);
+    BMS battery_2(25, 230, 500,500);
+    Inverter inverter(230, 10, 50, 230); // Inverter
     Grid grid(0, 0, 230, 50); // Grid
-    House house(20, 230, 50, 2.6); // House
-    std::vector<BMS> batteryModules = { battery_1, battery_2, battery_3 };
+    House house(600, 230, 50, 2.6); // House
+    std::vector<BMS> batteryModules = { battery_1, battery_2 };
     Storage storage(inverter, batteryModules);
     EM_Controller controller(pv, grid, storage, house);
 

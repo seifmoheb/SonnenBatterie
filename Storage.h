@@ -15,8 +15,8 @@ private:
 public:
     Storage(Inverter inv, std::vector<BMS> modules);
 
-    void charge(double power);
-    void discharge(double power);
+    double charge(double power);
+    double discharge(double power);
     
     Inverter getInverter();
     std::vector<BMS>& getBatteryModules();
