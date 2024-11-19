@@ -1,6 +1,6 @@
 
-#ifndef AAB_HEADER
-#define AAB_HEADER
+#ifndef EM_Controller_HEADER
+#define EM_Controller_HEADER
 
 #include "Photovoltaic.h"
 #include "Storage.h"

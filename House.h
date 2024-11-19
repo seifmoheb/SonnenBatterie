@@ -1,5 +1,5 @@
-#ifndef BAA_HEADER
-#define BAA_HEADER
+#ifndef House_HEADER
+#define House_HEADER
 class House {
 private:
     double powerConsumed;

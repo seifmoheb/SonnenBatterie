@@ -1,6 +1,6 @@
 
-#ifndef ABA_HEADER
-#define ABA_HEADER
+#ifndef Controller_HEADER
+#define Controller_HEADER
 
 class Grid {
 private:

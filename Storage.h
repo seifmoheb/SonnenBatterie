@@ -1,6 +1,6 @@
 
-#ifndef AAAB_HEADER
-#define AAAB_HEADER
+#ifndef Storage_HEADER
+#define Storage_HEADER
 
 #include "Inverter.h"
 #include "BMS.h"

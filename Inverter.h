@@ -1,5 +1,5 @@
-#ifndef ABB_HEADER
-#define ABB_HEADER
+#ifndef Inverter_HEADER
+#define Inverter_HEADER
 #include <vector>
 #include "BMS.h"
 class Inverter {

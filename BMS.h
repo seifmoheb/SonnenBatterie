@@ -1,5 +1,5 @@
-#ifndef AAA_HEADER
-#define AAA_HEADER
+#ifndef BMS_HEADER
+#define BMS_HEADER
 class BMS {
 private:
     double temperature;

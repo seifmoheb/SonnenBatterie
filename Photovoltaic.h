@@ -1,5 +1,5 @@
-#ifndef BBB_HEADER
-#define BBB_HEADER
+#ifndef PV_HEADER
+#define PV_HEADER
 class Photovoltaic{
 
 private:
